@@ -1,0 +1,55 @@
+<p>select-dropdown works!</p>
+<div>
+    <span label >SELECT</span>
+
+    <label style="display: block;">
+        <input #selectAllBox type="checkbox" [checked]="checkBoxValueList.length == 6" (change)=selectAll($event)>
+        <span checkbox>
+          <span>select_all</span>
+            <span>selected</span>
+        </span>
+    </label>
+
+    <div *ngIf="checkBoxValueList">
+        <ng-container custom-scrollbar>
+            <div  *ngIf="checkBoxValueList.length!=0" style="display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 200px;">
+              <div style="width: 100px" *ngFor="let teamS of checkBoxValueList" style="display: inline-flex;">
+                  <label style="display: flex;width:40px;">
+                    <input [checked]="teamS.checked" [disabled]="teamS.isDisabled" (change)="setSelected(teamS.id)" type="checkbox">
+                    <span checkbox="" *ngIf="!teamS.isDisabled" class="">{{teamS.id}}</span>
+                    <span checkbox="" *ngIf="teamS.isDisabled" >{{teamS.id}}</span>  
+                  </label>
+                  <div  *ngIf='teamS.list'>
+                    <button *ngIf='!teamS.visible' (click)='downClick(teamS)' style="vertical-align: middle;"class="arrow right"></button>
+                    <button *ngIf='teamS.visible' (click)='downClick(teamS)' style="vertical-align: middle;"class="arrow left"></button>
+                  </div>
+                  <div *ngIf='teamS.visible'>
+                    <label *ngFor="let item of teamS.list">
+                        <input [checked]="item.checked" [disabled]="item.isDisabled" (change)="setSelectedDeep(item.id)" type="checkbox">
+                        <span checkbox="" *ngIf="!item.isDisabled" class="">{{item.id}}</span>
+                    </label>
+                  </div>
+                </div>
+              
+            </div>
+        </ng-container>
+        <button (click)='onSubmit()'>Show/Hide</button>
+        <div *ngIf='isSubmitted'>
+          <span *ngFor="let teamS of checkBoxValueList">
+            <span *ngIf="teamS.checked" class="">{{teamS.id}}&nbsp;</span>
+            <div *ngIf='teamS.list'>
+              <span *ngFor="let team of teamS">
+              <span *ngIf="team.checked" class="">{{team.id}}&nbsp;</span>
+              </span>
+            </div>
+            </span>
+          </div>
+    </div> 
+
+    
+  </div> 
+  
+  <router-outlet></router-outlet>
