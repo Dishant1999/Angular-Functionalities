@@ -8,31 +8,31 @@ import {selectInput} from './app.model';
 })
 export class AppComponent {
 
-
-  //Considering CheckBoxes available as default 
-  //   input = [{id:'A'},{id:'B'},{id:'C'}]    
-  // properties: disabled
-  input = [{id:'A'},{id:'B'},{id:'C'}];
-
+  input = [{id: 'a'},
+  {id:'b', values:[{id:1},{id:2}]},
+  {id:'c', values:[{id:1},{id:2}]}
+  ];
   isSubmitted : boolean =false;
   selectAllBoxes : boolean = false;
-  // checkBoxValueList : selectInput[] = this.input ;
   checkBoxValueList = this.input;
   ngOnInit(){
-  //  this.checkBoxValueList.map((obj)=>{
-  //    obj['checked'] = false;
-  //    obj['disabled'] = false;
-  //    return obj;
-  //  })
-  
-   Object.assign(this.checkBoxValueList, {
-    checked: false, 
-    disabled: false, 
-   });
+      this.initializeInput(this.checkBoxValueList);
 
+    console.log(this.checkBoxValueList);
   }
 
   
+  private initializeInput(checkBoxValueList) {
+    checkBoxValueList.map((obj) => {
+      obj['checked'] = false;
+      obj['disabled'] = false;
+      if (obj['values'])
+        this.initializeInput(obj['values']);
+      return obj;
+    });
+
+  }
+
   selectAll(event){
     if(event.target.checked){
       _.each(this.checkBoxValueList,function(item){
