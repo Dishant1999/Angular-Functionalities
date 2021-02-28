@@ -8,20 +8,13 @@ import {selectInput} from './app.model';
 })
 export class AppComponent {
 
+  //input is provided in the nested object array format
   input = [{id: 'a'},
   {id:'b', values:[{id:1},{id:2}]},
   {id:'c', values:[{id:1},{id:2}]}
   ];
-  isSubmitted : boolean =false;
-  selectAllBoxes : boolean = false;
-  checkBoxValueList = this.input;
-  ngOnInit(){
-      this.initializeInput(this.checkBoxValueList);
 
-    console.log(this.checkBoxValueList);
-  }
-
-  
+  //every value in the input is inititalized with 2 properties: disabled, checked
   private initializeInput(checkBoxValueList) {
     checkBoxValueList.map((obj) => {
       obj['checked'] = false;
@@ -30,46 +23,75 @@ export class AppComponent {
         this.initializeInput(obj['values']);
       return obj;
     });
+  }
 
+  isSubmitted : boolean =false;
+  selectAllBoxes : boolean = false;
+  checkBoxValueList = this.input;
+
+  ngOnInit(){
+    this.initializeInput(this.checkBoxValueList);
+  }
+
+  setSelected(index){
+    index['checked'] = !index['checked']
+    if(index['values']){
+      this.selectAllSubValues(index);
+    }
+    this.checkAllSelected(this.checkBoxValueList);
+  }
+
+  private selectAllSubValues (object){
+    if(object['checked']){
+      _.each(object.values,function(item){
+        item.checked = true;
+      })
+    }else{
+      _.each(object.values,function(item){
+        item.checked = false;
+      })
+    }
+  }
+
+  private checkAllSelected(object) {
+    this.selectAllBoxes = object.every(function (e) {
+      return e['checked'] == true;
+    });
   }
 
   selectAll(event){
     if(event.target.checked){
-      _.each(this.checkBoxValueList,function(item){
-        item.checked = true;
+      this.selectAllBoxes = true;
+      this.checkBoxValueList.forEach((item)=>{
+        item['checked'] = true;
+        if(item['values']){
+          this.selectAllSubValues(item);
+        }
       })
     }else{
-      _.each(this.checkBoxValueList,function(item){
-        item.checked = false;
+      this.selectAllBoxes = false;
+      this.checkBoxValueList.forEach((item)=>{
+        item['checked'] = false;
+        if(item['values']){
+          this.selectAllSubValues(item);
+        }
       })
     }
   };
 
-  setSelected(id){
-    for(let index of this.checkBoxValueList){
-      if(index.id == id)
-          index['checked'] = !index['checked']
+  setSelectedDeep(parent, object){
+    object.checked = !object.checked;
+    if(parent.checked){
+      parent.checked = false;
+      this.selectAllBoxes = false;
     }
-    this.selectAllBoxes = this.checkBoxValueList.every(function(e){
-      return e['checked'] == true;
-    })
+    else
+      parent.checked = parent['values'].every(function (e) {
+        return e['checked'] == true;
+      });
   }
 
-  // setSelectedDeep(id){
-  //   for(let index of this.checkBoxValueList){
-  //     if(index.list)
-  //       for(let item of index.list)
-  //         if(item.id == id)
-  //           item.checked = !index.checked
-  //   }
-  // }
   onSubmit(){
     this.isSubmitted = !this.isSubmitted;
   }
-
-  // downClick(event){
-  //   console.log('downClick');
-  //   event.visible = !event.visible    
-  // }
-
 }

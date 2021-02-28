@@ -15,20 +15,15 @@
             width: 200px;">
               <div style="width: 100px" *ngFor="let teamS of checkBoxValueList" style="display: inline-flex;">
                   <label style="display: flex;width:40px;">
-                    <input [checked]="teamS.checked" [disabled]="teamS.isDisabled" (change)="setSelected(teamS.id)" type="checkbox">
-                    <span checkbox="" *ngIf="!teamS.isDisabled" class="">{{teamS.id}}</span>
-                    <span checkbox="" *ngIf="teamS.isDisabled" >{{teamS.id}}</span>  
+                    <input [checked]="teamS.checked" [disabled]="teamS.isDisabled" (change)="setSelected(teamS)" type="checkbox">
+                    <span checkbox="" [ngClass]="!teamS.isDisabled ? 'disabled' : '' ">{{teamS.id}}</span>
                   </label>
-                  <!-- <div  *ngIf='teamS.list'>
-                    <button *ngIf='!teamS.visible' (click)='downClick(teamS)' style="vertical-align: middle;"class="arrow right"></button>
-                    <button *ngIf='teamS.visible' (click)='downClick(teamS)' style="vertical-align: middle;"class="arrow left"></button>
-                  </div>
-                  <div *ngIf='teamS.visible'>
-                    <label *ngFor="let item of teamS.list">
-                        <input [checked]="item.checked" [disabled]="item.isDisabled" (change)="setSelectedDeep(item.id)" type="checkbox">
+                  <div *ngIf='teamS.values'>
+                    <label *ngFor="let item of teamS.values">
+                        <input [checked]="item.checked" [disabled]="item.isDisabled" (change)="setSelectedDeep(teamS, item)" type="checkbox">
                         <span checkbox="" *ngIf="!item.isDisabled" class="">{{item.id}}</span>
                     </label>
-                  </div> -->
+                  </div>
                 </div>
               
             </div>
@@ -36,17 +31,16 @@
         <button (click)='onSubmit()'>Show/Hide</button>
         <div *ngIf='isSubmitted'>
           <span *ngFor="let teamS of checkBoxValueList">
-            <span *ngIf="teamS.checked" class="">{{teamS.id}}&nbsp;</span>
-            <!-- <div *ngIf='teamS.list'>
-              <span *ngFor="let team of teamS">
-              <span *ngIf="team.checked" class="">{{team.id}}&nbsp;</span>
+            <span *ngIf="teamS.checked" class="">{{teamS.id}}</span>
+            <br>
+            <div *ngIf='teamS.values'>
+              <span *ngFor="let team of teamS.values">
+              <span *ngIf="team.checked" class="">{{teamS.id}}&nbsp;-{{team.id}}&nbsp;</span>
               </span>
-            </div> -->
+            </div>
           </span>
         </div>
-    </div> 
-
-    
+    </div>  
   </div> 
   
   <router-outlet></router-outlet>
